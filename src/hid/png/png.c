@@ -173,13 +173,13 @@ static const char *mask_colour_names[] = {
 
 static const color_struct mask_colours[] = {
 #define MASK_COLOUR_GREEN 0
-  {.r = 20, .g = 100, .b = 20},
+  {.r = 128, .g = 255, .b = 128},
 #define MASK_COLOUR_RED 1
-  {.r = 100, .g = 20, .b = 20},
+  {.r = 196, .g = 32, .b = 32},
 #define MASK_COLOUR_BLUE 2
-  {.r = 20, .g = 20, .b = 100},
+  {.r = 108, .g = 108, .b = 255},
 #define MASK_COLOUR_PURPLE 3
-  {.r = 38, .g = 15, .b = 38},
+  {.r = 200, .g = 128, .b = 200},
   //NULL
   {}
 };
@@ -594,6 +594,14 @@ blend (color_struct *dest, float a_amount, color_struct *a, color_struct *b)
 }
 
 static void
+multiply (color_struct *dest, color_struct *a, color_struct *b)
+{
+  dest->r = (a->r * b->r) / 255;
+  dest->g = (a->g * b->g) / 255;
+  dest->b = (a->b * b->b) / 255;
+}
+
+static void
 rgb (color_struct *dest, int r, int g, int b)
 {
   dest->r = r;
@@ -976,7 +984,7 @@ png_do_export (HID_Attr_Val * options)
 		{
 		  p = cop;
       mask_colour = mask_colours[options[HA_photo_mask_colour].int_value];
-      blend (&p, 0.4, &p, &mask_colour);
+      multiply (&p, &p, &mask_colour);
 		  if (mask == TOP_SHADOW)
 		    blend (&p, 0.7, &p, &white);
 		  if (mask == BOTTOM_SHADOW)
