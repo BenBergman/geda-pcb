@@ -175,7 +175,7 @@ static const color_struct mask_colours[] = {
 #define MASK_COLOUR_GREEN 0
   {.r = 128, .g = 255, .b = 128},
 #define MASK_COLOUR_RED 1
-  {.r = 196, .g = 32, .b = 32},
+  {.r = 176, .g = 32, .b = 32},
 #define MASK_COLOUR_BLUE 2
   {.r = 108, .g = 108, .b = 255},
 #define MASK_COLOUR_PURPLE 3
@@ -586,6 +586,14 @@ png_hid_export_to_file (FILE * the_file, HID_Attr_Val * options)
 }
 
 static void
+clip (color_struct *dest, color_struct *source)
+{
+  dest->r = (source->r > 255) ? 255 : source->r;
+  dest->g = (source->g > 255) ? 255 : source->g;
+  dest->b = (source->b > 255) ? 255 : source->b;
+}
+
+static void
 blend (color_struct *dest, float a_amount, color_struct *a, color_struct *b)
 {
   dest->r = a->r * a_amount + b->r * (1 - a_amount);
@@ -599,6 +607,16 @@ multiply (color_struct *dest, color_struct *a, color_struct *b)
   dest->r = (a->r * b->r) / 255;
   dest->g = (a->g * b->g) / 255;
   dest->b = (a->b * b->b) / 255;
+}
+
+static void
+add (color_struct *dest, float a_amount, color_struct *a, float b_amount, color_struct *b)
+{
+  dest->r = a->r * a_amount + b->r * b_amount;
+  dest->g = a->g * a_amount + b->g * b_amount;
+  dest->b = a->b * a_amount + b->b * b_amount;
+
+  clip (&dest, &dest);
 }
 
 static void
@@ -985,6 +1003,7 @@ png_do_export (HID_Attr_Val * options)
 		  p = cop;
       mask_colour = mask_colours[options[HA_photo_mask_colour].int_value];
       multiply (&p, &p, &mask_colour);
+      add (&p, 1, &p, 0.1, &mask_colour);
 		  if (mask == TOP_SHADOW)
 		    blend (&p, 0.7, &p, &white);
 		  if (mask == BOTTOM_SHADOW)
