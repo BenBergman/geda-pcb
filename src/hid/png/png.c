@@ -162,6 +162,28 @@ static const char *filetypes[] = {
   NULL
 };
 
+
+static const char *mask_colour_names[] = {
+  "Green",
+  "Red",
+  "Blue",
+  "Purple",
+  NULL
+};
+
+static const color_struct mask_colours[] = {
+#define MASK_COLOUR_GREEN 0
+  {.r = 20, .g = 100, .b = 20},
+#define MASK_COLOUR_RED 1
+  {.r = 100, .g = 20, .b = 20},
+#define MASK_COLOUR_BLUE 2
+  {.r = 20, .g = 20, .b = 100},
+#define MASK_COLOUR_PURPLE 3
+  {.r = 38, .g = 15, .b = 38},
+  //NULL
+  {}
+};
+
 HID_Attribute png_attribute_list[] = {
   /* other HIDs expect this to be first.  */
 
@@ -322,6 +344,19 @@ In photo-realistic mode, export the reverse side of the layout. Up-down flip.
   {"photo-flip-y", "Show reverse side of the board, up-down flip",
    HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_photo_flip_y 13
+
+  /* %start-doc options "93 PNG Options"
+     @ftable @code
+     @cindex photo-mask-colour
+     @item --photo-mask-colour <colour>
+     In photo-realistic mode, export the solder mask as this colour. Parameter 
+     @code{<colour>} can be @samp{Green}, @samp{Red}, @samp{Blue}, or @samp{Purple}.
+     @end ftable
+     %end-doc
+     */
+  {"photo-mask-colour", "Colour for the exported colour mask",
+    HID_Enum, 0, 0, {0, 0, 0}, mask_colour_names, 0},
+#define HA_photo_mask_colour 14
 
   {"ben-mode", ATTR_UNDOCUMENTED,
    HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
@@ -869,6 +904,7 @@ png_do_export (HID_Attr_Val * options)
 	  for (y=0; y<gdImageSY (im); y++)
 	    {
 	      color_struct p, cop;
+        color_struct mask_colour;
 	      int cc, mask, silk;
 	      int transparent;
 	     
@@ -939,8 +975,8 @@ png_do_export (HID_Attr_Val * options)
 	      else if (mask)
 		{
 		  p = cop;
-		  p.r /= 2;
-		  p.b /= 2;
+      mask_colour = mask_colours[options[HA_photo_mask_colour].int_value];
+      blend (&p, 0.4, &p, &mask_colour);
 		  if (mask == TOP_SHADOW)
 		    blend (&p, 0.7, &p, &white);
 		  if (mask == BOTTOM_SHADOW)
