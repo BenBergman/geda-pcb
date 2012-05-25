@@ -164,22 +164,23 @@ static const char *filetypes[] = {
 
 
 static const char *mask_colour_names[] = {
-  "Green",
-  "Red",
-  "Blue",
-  "Purple",
+  "green",
+  "red",
+  "blue",
+  "purple",
   NULL
 };
 
+// These values were arrived at through trial and error
 static const color_struct mask_colours[] = {
 #define MASK_COLOUR_GREEN 0
-  {.r = 128, .g = 255, .b = 128},
+  {.r = 80, .g = 200, .b = 80},
 #define MASK_COLOUR_RED 1
   {.r = 176, .g = 32, .b = 32},
 #define MASK_COLOUR_BLUE 2
-  {.r = 108, .g = 108, .b = 255},
+  {.r = 65, .g = 65, .b = 230},
 #define MASK_COLOUR_PURPLE 3
-  {.r = 200, .g = 128, .b = 200},
+  {.r = 100, .g = 20, .b = 100},
   //NULL
   {}
 };
@@ -350,7 +351,7 @@ In photo-realistic mode, export the reverse side of the layout. Up-down flip.
      @cindex photo-mask-colour
      @item --photo-mask-colour <colour>
      In photo-realistic mode, export the solder mask as this colour. Parameter 
-     @code{<colour>} can be @samp{Green}, @samp{Red}, @samp{Blue}, or @samp{Purple}.
+     @code{<colour>} can be @samp{green}, @samp{red}, @samp{blue}, or @samp{purple}.
      @end ftable
      %end-doc
      */
@@ -616,7 +617,7 @@ add (color_struct *dest, float a_amount, color_struct *a, float b_amount, color_
   dest->g = a->g * a_amount + b->g * b_amount;
   dest->b = a->b * a_amount + b->b * b_amount;
 
-  clip (&dest, &dest);
+  clip (dest, dest);
 }
 
 static void
