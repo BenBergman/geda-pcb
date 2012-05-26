@@ -174,14 +174,14 @@ static const char *mask_colour_names[] = {
 // These values were arrived at through trial and error
 static const color_struct mask_colours[] = {
 #define MASK_COLOUR_GREEN 0
-  {.r = 80, .g = 200, .b = 80},
+  {.r = 60, .g = 160, .b = 60},
 #define MASK_COLOUR_RED 1
-  {.r = 176, .g = 32, .b = 32},
+  {.r = 140, .g = 25, .b = 25},
 #define MASK_COLOUR_BLUE 2
-  {.r = 65, .g = 65, .b = 230},
+  {.r = 50, .g = 50, .b = 160},
 #define MASK_COLOUR_PURPLE 3
-  {.r = 100, .g = 20, .b = 100},
-  //NULL
+  {.r = 60, .g = 20, .b = 70},
+#define MASK_COLOUR_BLACK 4
   {}
 };
 
@@ -1004,7 +1004,7 @@ png_do_export (HID_Attr_Val * options)
 		  p = cop;
       mask_colour = mask_colours[options[HA_photo_mask_colour].int_value];
       multiply (&p, &p, &mask_colour);
-      add (&p, 1, &p, 0.1, &mask_colour);
+      add (&p, 1, &p, 0.2, &mask_colour);
 		  if (mask == TOP_SHADOW)
 		    blend (&p, 0.7, &p, &white);
 		  if (mask == BOTTOM_SHADOW)
