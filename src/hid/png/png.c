@@ -997,33 +997,25 @@ png_do_export (HID_Attr_Val * options)
           if (options[HA_photo_gold_plating].int_value)
             {
               // ENIG
-              rgb (&cop, 190, 163, 57);
+              rgb (&cop, 185, 158, 52);
+              if (cc == TOP_SHADOW)
+                blend (&cop, 0.7, &cop, &white);
             }
           else
             {
               // tinned
               rgb (&cop, 140, 150, 160);
+              r = (rand() % 5 - 2) * 2;
+              cop.r += r;
+              cop.g += r;
+              cop.b += r;
             }
-
-		      r = (rand() % 5 - 2) * 2;
-		      cop.r += r;
-		      cop.g += r;
-		      cop.b += r;
-
 		    }
 		  
 		  if (cc == TOP_SHADOW)
-		    {
-		      cop.r = 255 - (255 - cop.r) * 0.7;
-		      cop.g = 255 - (255 - cop.g) * 0.7;
-		      cop.b = 255 - (255 - cop.b) * 0.7;
-		    }
+        blend (&cop, 0.7, &cop, &white);
 		  if (cc == BOTTOM_SHADOW)
-		    {
-		      cop.r *= 0.7;
-		      cop.g *= 0.7;
-		      cop.b *= 0.7;
-		    }
+        blend (&cop, 0.7, &cop, &black);
 		}
 
 	      if (photo_drill && !gdImageGetPixel (photo_drill, x, y)) 
