@@ -168,10 +168,15 @@ static const char *mask_colour_names[] = {
   "red",
   "blue",
   "purple",
+  "black",
+  "white",
   NULL
 };
 
-// These values were arrived at through trial and error
+// These values were arrived at through trial and error.
+// One potential improvement (especially for white) is
+// to use separate color_structs for the multiplication
+// and addition parts of the mask math.
 static const color_struct mask_colours[] = {
 #define MASK_COLOUR_GREEN 0
   {.r = 60, .g = 160, .b = 60},
@@ -182,6 +187,9 @@ static const color_struct mask_colours[] = {
 #define MASK_COLOUR_PURPLE 3
   {.r = 60, .g = 20, .b = 70},
 #define MASK_COLOUR_BLACK 4
+  {.r = 20, .g = 20, .b = 20},
+#define MASK_COLOUR_WHITE 5
+  {.r = 167, .g = 230, .b = 162}, // <-- needs improvement over FR4
   {}
 };
 
