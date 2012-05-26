@@ -354,17 +354,17 @@ In photo-realistic mode, export the reverse side of the layout. Up-down flip.
    HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_photo_flip_y 13
 
-  /* %start-doc options "93 PNG Options"
-     @ftable @code
-     @cindex photo-mask-colour
-     @item --photo-mask-colour <colour>
-     In photo-realistic mode, export the solder mask as this colour. Parameter 
-     @code{<colour>} can be @samp{green}, @samp{red}, @samp{blue}, or @samp{purple}.
-     @end ftable
-     %end-doc
-     */
+/* %start-doc options "93 PNG Options"
+@ftable @code
+@cindex photo-mask-colour
+@item --photo-mask-colour <colour>
+In photo-realistic mode, export the solder mask as this colour. Parameter 
+@code{<colour>} can be @samp{green}, @samp{red}, @samp{blue}, or @samp{purple}.
+@end ftable
+%end-doc
+*/
   {"photo-mask-colour", "Colour for the exported colour mask",
-    HID_Enum, 0, 0, {0, 0, 0}, mask_colour_names, 0},
+   HID_Enum, 0, 0, {0, 0, 0}, mask_colour_names, 0},
 #define HA_photo_mask_colour 14
 
 /* %start-doc options "93 PNG Options"
