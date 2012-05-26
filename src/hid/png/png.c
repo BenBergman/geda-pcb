@@ -379,6 +379,18 @@ In photo-realistic mode, use gold plating for pins and pads.
    HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_photo_gold_plating 15
 
+/* %start-doc options "93 PNG Options"
+@ftable @code
+@cindex photo-black-silk
+@item --photo-black-silk
+In photo-realistic mode, use black silk screen.
+@end ftable
+%end-doc
+*/
+  {"photo-black-silk", "Use black silk screen",
+   HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_photo_black_silk 16
+
   {"ben-mode", ATTR_UNDOCUMENTED,
    HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_ben_mode 11
@@ -1021,12 +1033,24 @@ png_do_export (HID_Attr_Val * options)
 		}
 	      else if (silk)
 		{
-		  if (silk == TOP_SHADOW)
-		    rgb (&p, 255, 255, 255);
-		  else if (silk == BOTTOM_SHADOW)
-		    rgb (&p, 192, 192, 192);
-		  else
-		    rgb (&p, 224, 224, 224);
+      if (options[HA_photo_black_silk].int_value)
+        {
+          if (silk == TOP_SHADOW)
+            rgb (&p, 45, 45, 45);
+          else if (silk == BOTTOM_SHADOW)
+            rgb (&p, 0, 0, 0);
+          else
+          rgb (&p, 14, 14, 14);
+        }
+      else
+        {
+          if (silk == TOP_SHADOW)
+            rgb (&p, 255, 255, 255);
+          else if (silk == BOTTOM_SHADOW)
+            rgb (&p, 192, 192, 192);
+          else
+            rgb (&p, 224, 224, 224);
+        }
 		}
 	      else if (mask)
 		{
