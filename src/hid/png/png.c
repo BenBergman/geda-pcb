@@ -998,6 +998,8 @@ png_do_export (HID_Attr_Val * options)
             {
               // ENIG
               rgb (&cop, 185, 158, 52);
+
+              // increase top shadow to increase shininess
               if (cc == TOP_SHADOW)
                 blend (&cop, 0.7, &cop, &white);
             }
@@ -1005,6 +1007,8 @@ png_do_export (HID_Attr_Val * options)
             {
               // tinned
               rgb (&cop, 140, 150, 160);
+
+              // add some variation to make it look more matte
               r = (rand() % 5 - 2) * 2;
               cop.r += r;
               cop.g += r;
