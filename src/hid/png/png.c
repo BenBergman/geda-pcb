@@ -367,6 +367,18 @@ In photo-realistic mode, export the reverse side of the layout. Up-down flip.
     HID_Enum, 0, 0, {0, 0, 0}, mask_colour_names, 0},
 #define HA_photo_mask_colour 14
 
+/* %start-doc options "93 PNG Options"
+@ftable @code
+@cindex photo-gold-plating
+@item --photo-gold-plating
+In photo-realistic mode, use gold plating for pins and pads.
+@end ftable
+%end-doc
+*/
+  {"photo-gold-plating", "Use gold plating for pins and pads",
+   HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_photo_gold_plating 15
+
   {"ben-mode", ATTR_UNDOCUMENTED,
    HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_ben_mode 11
@@ -970,7 +982,16 @@ png_do_export (HID_Attr_Val * options)
 		    rgb (&cop, 220, 145, 230);
 		  else
 		    {
-		      rgb (&cop, 140, 150, 160);
+          if (options[HA_photo_gold_plating].int_value)
+            {
+              // ENIG
+              rgb (&cop, 190, 163, 57);
+            }
+          else
+            {
+              // tinned
+              rgb (&cop, 140, 150, 160);
+            }
 
 		      r = (rand() % 5 - 2) * 2;
 		      cop.r += r;
