@@ -221,7 +221,7 @@ static const color_struct silk_colours[] = {
 #define SILK_COLOUR_BLACK 1
   {.r = 14, .g = 14, .b = 14},
 #define SILK_COLOUR_YELLOW 2
-  {.r = 196, .g = 219, .b = 62},
+  {.r = 185, .g = 185, .b = 10},
   {}
 };
 
@@ -1075,6 +1075,10 @@ png_do_export (HID_Attr_Val * options)
             {
               // copper
               rgb (&cop, 166, 104, 89);
+
+              // increase top shadow to increase shininess
+              if (cc == TOP_SHADOW)
+                blend (&cop, 0.7, &cop, &white);
             }
 		    }
 		  
