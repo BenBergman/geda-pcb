@@ -193,6 +193,27 @@ static const color_struct mask_colours[] = {
   {}
 };
 
+
+static const char *mask_silk_names[] = {
+  "white",
+  "black",
+  "yellow",
+  NULL
+};
+
+static const color_struct silk_colours[] = {
+#define SILK_COLOUR_WHITE 0
+  {.r = 14, .g = 14, .b = 14},
+#define SILK_COLOUR_BLACK 1
+  {.r = 224, .g = 224, .b = 224},
+#define SILK_COLOUR_YELLOW 2
+  {.r = 196, .g = 219, .b = 62},
+  {}
+};
+
+static const color_struct silk_top_shadow = {.r = 21, .g = 21, .b = 21};
+static const color_struct silk_bottom_shadow = {.r = 14, .g = 14, .b = 14};
+
 HID_Attribute png_attribute_list[] = {
   /* other HIDs expect this to be first.  */
 
@@ -381,15 +402,16 @@ In photo-realistic mode, use gold plating for pins and pads.
 
 /* %start-doc options "93 PNG Options"
 @ftable @code
-@cindex photo-black-silk
-@item --photo-black-silk
-In photo-realistic mode, use black silk screen.
+@cindex photo-silk-colour
+@item --photo-silk-colour
+In photo-realistic mode, export the silk screen as this colour. Parameter 
+@code{<colour>} can be @samp{white}, @samp{black}, or @samp{yellow}.
 @end ftable
 %end-doc
 */
-  {"photo-black-silk", "Use black silk screen",
-   HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_photo_black_silk 16
+  {"photo-silk-colour", "Colour for the exported colour mask",
+   HID_Enum, 0, 0, {0, 0, 0}, mask_silk_names, 0},
+#define HA_photo_silk_colour 16
 
   {"ben-mode", ATTR_UNDOCUMENTED,
    HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
@@ -643,11 +665,21 @@ multiply (color_struct *dest, color_struct *a, color_struct *b)
 }
 
 static void
-add (color_struct *dest, float a_amount, color_struct *a, float b_amount, color_struct *b)
+add (color_struct *dest, float a_amount, const color_struct *a, float b_amount, const color_struct *b)
 {
   dest->r = a->r * a_amount + b->r * b_amount;
   dest->g = a->g * a_amount + b->g * b_amount;
   dest->b = a->b * a_amount + b->b * b_amount;
+
+  clip (dest, dest);
+}
+
+static void
+subtract (color_struct *dest, float a_amount, const color_struct *a, float b_amount, const color_struct *b)
+{
+  dest->r = a->r * a_amount > b->r * b_amount ? a->r * a_amount - b->r * b_amount : 0;
+  dest->g = a->g * a_amount > b->g * b_amount ? a->g * a_amount - b->g * b_amount : 0;
+  dest->b = a->b * a_amount > b->b * b_amount ? a->b * a_amount - b->b * b_amount : 0;
 
   clip (dest, dest);
 }
@@ -963,7 +995,7 @@ png_do_export (HID_Attr_Val * options)
 	  for (y=0; y<gdImageSY (im); y++)
 	    {
 	      color_struct p, cop;
-        color_struct mask_colour;
+        color_struct mask_colour, silk_colour;
 	      int cc, mask, silk;
 	      int transparent;
 	     
@@ -1029,24 +1061,12 @@ png_do_export (HID_Attr_Val * options)
 		}
 	      else if (silk)
 		{
-      if (options[HA_photo_black_silk].int_value)
-        {
-          if (silk == TOP_SHADOW)
-            rgb (&p, 45, 45, 45);
-          else if (silk == BOTTOM_SHADOW)
-            rgb (&p, 0, 0, 0);
-          else
-          rgb (&p, 14, 14, 14);
-        }
-      else
-        {
-          if (silk == TOP_SHADOW)
-            rgb (&p, 255, 255, 255);
-          else if (silk == BOTTOM_SHADOW)
-            rgb (&p, 192, 192, 192);
-          else
-            rgb (&p, 224, 224, 224);
-        }
+      silk_colour = silk_colours[options[HA_photo_silk_colour].int_value];
+      blend (&p, 1.0, &silk_colour, &silk_colour);
+      if (silk == TOP_SHADOW)
+        add (&p, 1.0, &p, 1.0, &silk_top_shadow);
+      else if (silk == BOTTOM_SHADOW)
+        subtract (&p, 1.0, &p, 1.0, &silk_bottom_shadow);
 		}
 	      else if (mask)
 		{
