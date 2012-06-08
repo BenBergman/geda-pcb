@@ -194,7 +194,7 @@ static const color_struct mask_colours[] = {
 };
 
 
-static const char *mask_silk_names[] = {
+static const char *silk_colour_names[] = {
   "white",
   "black",
   "yellow",
@@ -410,7 +410,7 @@ In photo-realistic mode, export the silk screen as this colour. Parameter
 %end-doc
 */
   {"photo-silk-colour", "Colour for the exported colour mask",
-   HID_Enum, 0, 0, {0, 0, 0}, mask_silk_names, 0},
+   HID_Enum, 0, 0, {0, 0, 0}, silk_colour_names, 0},
 #define HA_photo_silk_colour 16
 
   {"ben-mode", ATTR_UNDOCUMENTED,
