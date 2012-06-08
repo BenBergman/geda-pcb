@@ -194,6 +194,20 @@ static const color_struct mask_colours[] = {
 };
 
 
+static const char *plating_type_names[] = {
+#define PLATING_TIN 0
+  "tinned",
+#define PLATING_GOLD 1
+  "gold",
+#define PLATING_SILVER 2
+  "silver",
+#define PLATING_COPPER 3
+  "copper",
+  NULL
+};
+
+
+
 static const char *silk_colour_names[] = {
   "white",
   "black",
@@ -390,15 +404,17 @@ In photo-realistic mode, export the solder mask as this colour. Parameter
 
 /* %start-doc options "93 PNG Options"
 @ftable @code
-@cindex photo-gold-plating
-@item --photo-gold-plating
-In photo-realistic mode, use gold plating for pins and pads.
+@cindex photo-plating
+@item --photo-plating
+In photo-realistic mode, export the exposed copper as though it has this type 
+of plating. Parameter @code{<colour>} can be @samp{tinned}, @samp{gold}, 
+@samp{silver}, or @samp{copper}.
 @end ftable
 %end-doc
 */
-  {"photo-gold-plating", "Use gold plating for pins and pads",
-   HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_photo_gold_plating 15
+  {"photo-plating", "Type of plating applied to exposed copper in photo-mode",
+   HID_Enum, 0, 0, {0, 0, 0}, plating_type_names, 0},
+#define HA_photo_plating 15
 
 /* %start-doc options "93 PNG Options"
 @ftable @code
@@ -1026,7 +1042,7 @@ png_do_export (HID_Attr_Val * options)
 		    rgb (&cop, 220, 145, 230);
 		  else
 		    {
-          if (options[HA_photo_gold_plating].int_value)
+          if (options[HA_photo_plating].int_value == PLATING_GOLD)
             {
               // ENIG
               rgb (&cop, 185, 158, 52);
@@ -1035,7 +1051,7 @@ png_do_export (HID_Attr_Val * options)
               if (cc == TOP_SHADOW)
                 blend (&cop, 0.7, &cop, &white);
             }
-          else
+          else if (options[HA_photo_plating].int_value == PLATING_TIN)
             {
               // tinned
               rgb (&cop, 140, 150, 160);
@@ -1045,6 +1061,20 @@ png_do_export (HID_Attr_Val * options)
               cop.r += r;
               cop.g += r;
               cop.b += r;
+            }
+          else if (options[HA_photo_plating].int_value == PLATING_SILVER)
+            {
+              // silver
+              rgb (&cop, 192, 192, 185);
+
+              // increase top shadow to increase shininess
+              if (cc == TOP_SHADOW)
+                blend (&cop, 0.7, &cop, &white);
+            }
+          else if (options[HA_photo_plating].int_value == PLATING_COPPER)
+            {
+              // copper
+              rgb (&cop, 166, 104, 89);
             }
 		    }
 		  
