@@ -203,9 +203,9 @@ static const char *silk_colour_names[] = {
 
 static const color_struct silk_colours[] = {
 #define SILK_COLOUR_WHITE 0
-  {.r = 14, .g = 14, .b = 14},
-#define SILK_COLOUR_BLACK 1
   {.r = 224, .g = 224, .b = 224},
+#define SILK_COLOUR_BLACK 1
+  {.r = 14, .g = 14, .b = 14},
 #define SILK_COLOUR_YELLOW 2
   {.r = 196, .g = 219, .b = 62},
   {}
