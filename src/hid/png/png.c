@@ -1045,7 +1045,7 @@ png_do_export (HID_Attr_Val * options)
           if (options[HA_photo_plating].int_value == PLATING_GOLD)
             {
               // ENIG
-              rgb (&cop, 185, 158, 52);
+              rgb (&cop, 185, 146, 52);
 
               // increase top shadow to increase shininess
               if (cc == TOP_SHADOW)
@@ -1074,7 +1074,7 @@ png_do_export (HID_Attr_Val * options)
           else if (options[HA_photo_plating].int_value == PLATING_COPPER)
             {
               // copper
-              rgb (&cop, 166, 104, 89);
+              rgb (&cop, 184, 115, 51);
 
               // increase top shadow to increase shininess
               if (cc == TOP_SHADOW)
